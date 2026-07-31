@@ -1,9 +1,10 @@
 # PlantCare — Frontend
 
 A React app for tracking when your plants need watering, with real user
-accounts. Built as a full-stack exercise in two stages: first CRUD, then
-authentication on top of it. This is the frontend half; it talks to a
-separate backend API — [plant-care-backend](https://github.com/muzzammilahmed18/plant-care-backend).
+accounts. Built as a full-stack internship project, in stages: CRUD →
+authentication → a richer multi-field form with validation and file
+uploads. This is the frontend half; it talks to a separate backend API —
+[plant-care-backend](https://github.com/muzzammilahmed18/plant-care-backend).
 
 ## What it does
 
@@ -11,62 +12,65 @@ separate backend API — [plant-care-backend](https://github.com/muzzammilahmed1
 - Sign up with an email + password (validated client-side before it ever
   hits the server)
 - Log in to an existing account
-- The plant list is scoped to whoever's logged in — every account only
-  ever sees its own plants
-- Log out clears the session and returns you to the login page
-- Visiting the app without being logged in redirects straight to `/login`
-  — no plant data is ever shown to a signed-out visitor
+- The plant list is scoped to whoever's logged in
+- Log out clears the session; visiting the app while signed out redirects
+  straight to `/login`
 
-**Plants (once logged in)**
-- Add a plant (name, species, watering frequency)
-- View all your plants as cards, each showing a status badge:
-  - 🟢 Fine · 🟡 Due soon · 🔴 Overdue
+**Adding a plant** — a 7-field form:
+- Name, species, category (dropdown), watering frequency, date acquired
+  (date picker), a photo upload (with a live preview), and notes
+- Client-side validation with **field-specific** error messages (not a
+  generic "invalid input") — checked before anything is sent to the server
+- Matching server-side validation, since the frontend can always be
+  bypassed
+- Non-image files are rejected instantly, client-side, before any network
+  request is made
+- The submit button disables and shows a spinner while the request is in
+  flight, so it's never possible to double-submit
+- A toast notification (green for success, red for failure) confirms what
+  happened after every submit
+
+**Managing plants**
+- View all plants as cards, each showing a status badge:
+  🟢 Fine · 🟡 Due soon · 🔴 Overdue — plus category, photo, and notes
 - Mark a plant as watered (updates its last-watered date)
 - Delete a plant
+- Every action (add/water/delete) has its own loading state and its own
+  toast feedback
 
 ## Tech stack
 
 - React + Vite
 - Tailwind CSS
-- React Router — for `/login`, `/signup`, and a protected `/` route
-- Plain `fetch` for API calls, all living in `src/api.js`
-- Auth state managed with a single `AuthContext` (React Context +
-  `useState`) — no external state library needed at this size
+- React Router — `/login`, `/signup`, and a protected `/` route
+- `FormData` (not plain JSON) for the create-plant request, so the photo
+  file can travel alongside the text fields
+- Auth state via a single `AuthContext` (React Context + `useState`)
 
 ## Project structure
 
 ```
 src/
   components/
-    PlantForm.jsx        create form
-    PlantCard.jsx          one plant's card + water/delete buttons
-    PlantList.jsx            grid of cards + loading/error/empty states
-    ProtectedRoute.jsx        redirects to /login if not authenticated
+    PlantForm.jsx           7-field create form, client validation, photo preview
+    PlantCard.jsx             one plant's card, shows photo/category/notes
+    PlantList.jsx               grid + loading/error/empty states
+    ProtectedRoute.jsx           redirects to /login if not authenticated
+    Toast.jsx                     success/error banner, auto-dismisses
   pages/
-    Login.jsx                 login form + validation
-    Signup.jsx                 signup form + validation
-    Plants.jsx                   the CRUD page (behind the protected route)
+    Login.jsx / Signup.jsx           auth forms + validation
+    Plants.jsx                         the main page (behind the protected route)
   context/
-    AuthContext.jsx               holds token/email, exposes login/signup/logout
-  api.js                       all fetch calls (auth + plants) in one place
-  App.jsx                     route definitions
+    AuthContext.jsx                      holds token/email, login/signup/logout
+  api.js                                all fetch calls (auth + plants) in one place
+  App.jsx                              route definitions
 ```
-
-## Auth flow, in short
-
-1. Sign up or log in → backend returns a JWT
-2. The token is stored in `localStorage` (along with the user's email)
-3. Every plant request attaches the token as an `Authorization: Bearer`
-   header (see `authHeaders()` in `api.js`)
-4. If a request comes back `401`/`403` (missing or expired token), the
-   frontend surfaces this as a clear error rather than silently failing
-5. Logging out simply clears the stored token — nothing further is
-   needed for a JWT-based session
 
 ## Run locally
 
 This app expects the backend to be running at `http://localhost:5000`
-(see the backend repo for setup).
+(see the backend repo for setup, including the `uploads/` folder for
+photos).
 
 ```bash
 npm install
