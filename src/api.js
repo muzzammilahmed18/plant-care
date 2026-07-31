@@ -1,13 +1,12 @@
 const BASE_URL = "http://localhost:5000";
 
-// Every plant request needs the token attached, so this small helper
-// builds the headers once instead of repeating it in every function.
-function authHeaders() {
+function authHeaderOnly() {
   const token = localStorage.getItem("token");
-  return {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+function jsonHeaders() {
+  return { "Content-Type": "application/json", ...authHeaderOnly() };
 }
 
 // ---- Auth ----
@@ -34,10 +33,10 @@ export async function loginRequest({ email, password }) {
   return data;
 }
 
-// ---- Plants (all require a valid token) ----
+// ---- Plants ----
 
 export async function getPlants() {
-  const res = await fetch(`${BASE_URL}/plants`, { headers: authHeaders() });
+  const res = await fetch(`${BASE_URL}/plants`, { headers: authHeaderOnly() });
   if (res.status === 401 || res.status === 403) {
     throw new Error("Your session has expired. Please log in again.");
   }
@@ -45,20 +44,30 @@ export async function getPlants() {
   return res.json();
 }
 
-export async function createPlant(plant) {
+// Takes a FormData object (built by PlantForm) so it can include the
+// photo file alongside the text fields. Don't set Content-Type manually
+// here — the browser sets the correct multipart boundary automatically.
+export async function createPlant(formData) {
   const res = await fetch(`${BASE_URL}/plants`, {
     method: "POST",
-    headers: authHeaders(),
-    body: JSON.stringify(plant),
+    headers: authHeaderOnly(),
+    body: formData,
   });
-  if (!res.ok) throw new Error("Failed to add plant");
-  return res.json();
+  const data = await res.json();
+  if (!res.ok) {
+    const err = new Error(data.error || "Failed to add plant");
+    err.fieldErrors = data.errors || null;
+    throw err;
+  }
+  return data;
 }
 
+// Used for the quick "mark as watered" action — plain JSON is enough
+// here since no file is involved.
 export async function updatePlant(id, updates) {
   const res = await fetch(`${BASE_URL}/plants/${id}`, {
     method: "PUT",
-    headers: authHeaders(),
+    headers: jsonHeaders(),
     body: JSON.stringify(updates),
   });
   if (!res.ok) throw new Error("Failed to update plant");
@@ -68,7 +77,7 @@ export async function updatePlant(id, updates) {
 export async function deletePlant(id) {
   const res = await fetch(`${BASE_URL}/plants/${id}`, {
     method: "DELETE",
-    headers: authHeaders(),
+    headers: authHeaderOnly(),
   });
   if (!res.ok) throw new Error("Failed to delete plant");
   return res.json();
