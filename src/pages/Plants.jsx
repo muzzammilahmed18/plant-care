@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import PlantForm from "../components/PlantForm";
 import PlantList, { LoadingState, ErrorState, EmptyState } from "../components/PlantList";
 import { useAuth } from "../context/AuthContext";
@@ -15,13 +16,18 @@ export default function Plants() {
   return (
     <div className="min-h-screen bg-gray-50 px-6 md:px-10 py-12">
       <div className="max-w-5xl mx-auto">
-        <div className="flex items-start justify-between mb-2">
+        <div className="flex items-start justify-between mb-2 flex-wrap gap-3">
           <h1 className="text-3xl font-bold text-gray-900">🌱 PlantCare</h1>
-          <div className="text-right">
-            <p className="text-sm text-gray-500">{email}</p>
-            <button onClick={logout} className="text-sm text-red-600 hover:underline">
-              Log out
-            </button>
+          <div className="flex items-center gap-4">
+            <Link to="/dashboard" className="text-sm text-blue-600 hover:underline">
+              View dashboard →
+            </Link>
+            <div className="text-right">
+              <p className="text-sm text-gray-500">{email}</p>
+              <button onClick={logout} className="text-sm text-red-600 hover:underline">
+                Log out
+              </button>
+            </div>
           </div>
         </div>
         <p className="text-gray-500 mb-8">

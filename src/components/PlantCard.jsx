@@ -1,23 +1,20 @@
 import { usePlants } from "../context/PlantsContext";
+import { getPlantStatus } from "../utils/plantStatus";
 
 const BASE_URL = "http://localhost:5000";
 
-function getStatus(lastWateredDate, frequencyDays) {
-  const last = new Date(lastWateredDate);
-  const daysSince = Math.floor((Date.now() - last) / (1000 * 60 * 60 * 24));
-  const daysLeft = frequencyDays - daysSince;
-
-  if (daysLeft < 0) return { label: "Overdue", color: "bg-red-100 text-red-700" };
-  if (daysLeft <= 1) return { label: "Due soon", color: "bg-yellow-100 text-yellow-700" };
-  return { label: "Fine", color: "bg-green-100 text-green-700" };
-}
+const STATUS_STYLES = {
+  Overdue: "bg-red-100 text-red-700",
+  "Due soon": "bg-yellow-100 text-yellow-700",
+  Fine: "bg-green-100 text-green-700",
+};
 
 // onWater/onDelete/actionLoadingId used to arrive as props, forwarded
 // down through PlantList by Plants.jsx. Now this card pulls them
 // straight from PlantsContext — one less layer of prop-passing.
 export default function PlantCard({ plant }) {
   const { waterPlant, removePlant, actionLoadingId } = usePlants();
-  const status = getStatus(plant.lastWateredDate, plant.wateringFrequencyDays);
+  const statusLabel = getPlantStatus(plant.lastWateredDate, plant.wateringFrequencyDays);
   const actionLoading = actionLoadingId === plant.id;
 
   return (
@@ -42,8 +39,8 @@ export default function PlantCard({ plant }) {
               <p className="text-sm text-gray-500 italic">{plant.species}</p>
             )}
           </div>
-          <span className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${status.color}`}>
-            {status.label}
+          <span className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${STATUS_STYLES[statusLabel]}`}>
+            {statusLabel}
           </span>
         </div>
 
