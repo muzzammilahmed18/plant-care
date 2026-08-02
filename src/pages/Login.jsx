@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 export default function Login() {
   const { login, loading, error } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -23,7 +25,10 @@ export default function Login() {
     if (!validate()) return;
 
     const success = await login({ email: email.trim(), password });
-    if (success) navigate("/");
+    if (success) {
+      showToast("Welcome back!", "success");
+      navigate("/");
+    }
   }
 
   return (

@@ -1,3 +1,5 @@
+import { usePlants } from "../context/PlantsContext";
+
 const BASE_URL = "http://localhost:5000";
 
 function getStatus(lastWateredDate, frequencyDays) {
@@ -10,8 +12,13 @@ function getStatus(lastWateredDate, frequencyDays) {
   return { label: "Fine", color: "bg-green-100 text-green-700" };
 }
 
-export default function PlantCard({ plant, onWater, onDelete, actionLoading }) {
+// onWater/onDelete/actionLoadingId used to arrive as props, forwarded
+// down through PlantList by Plants.jsx. Now this card pulls them
+// straight from PlantsContext — one less layer of prop-passing.
+export default function PlantCard({ plant }) {
+  const { waterPlant, removePlant, actionLoadingId } = usePlants();
   const status = getStatus(plant.lastWateredDate, plant.wateringFrequencyDays);
+  const actionLoading = actionLoadingId === plant.id;
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col">
@@ -57,14 +64,14 @@ export default function PlantCard({ plant, onWater, onDelete, actionLoading }) {
 
         <div className="flex gap-2 mt-auto pt-1">
           <button
-            onClick={() => onWater(plant.id)}
+            onClick={() => waterPlant(plant.id)}
             disabled={actionLoading}
             className="flex-1 bg-blue-600 text-white text-sm font-medium py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
             {actionLoading ? "..." : "Mark as watered"}
           </button>
           <button
-            onClick={() => onDelete(plant.id)}
+            onClick={() => removePlant(plant.id)}
             disabled={actionLoading}
             className="px-3 py-2 border border-gray-300 text-gray-600 text-sm rounded-md hover:bg-gray-50 disabled:opacity-50"
           >

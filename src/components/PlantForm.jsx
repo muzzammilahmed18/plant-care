@@ -1,44 +1,28 @@
 import { useState } from "react";
+import { usePlants } from "../context/PlantsContext";
+import UploadDropzone from "./UploadDropzone";
 
 const CATEGORY_OPTIONS = ["Succulent", "Fern", "Flowering", "Foliage", "Herb", "Other"];
-const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5MB, matches the backend limit
 
 function todayISODate() {
   return new Date().toISOString().split("T")[0];
 }
 
-export default function PlantForm({ onAdd, submitting, serverFieldErrors }) {
+// onAdd/submitting/serverFieldErrors used to be passed down as props
+// from Plants.jsx. Now this form reads them straight from
+// PlantsContext, since it's rendered anywhere inside a PlantsProvider.
+export default function PlantForm() {
+  const { addPlant, submitting, serverFieldErrors } = usePlants();
   const [name, setName] = useState("");
   const [species, setSpecies] = useState("");
   const [category, setCategory] = useState("");
   const [frequency, setFrequency] = useState("7");
   const [dateAcquired, setDateAcquired] = useState(todayISODate());
   const [notes, setNotes] = useState("");
-  const [photo, setPhoto] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState(null);
+  // Just a URL string now — the actual upload already happened via
+  // UploadDropzone by the time this form is submitted.
+  const [photoUrl, setPhotoUrl] = useState(null);
   const [errors, setErrors] = useState({});
-
-  function handlePhotoChange(e) {
-    const file = e.target.files[0];
-    if (!file) {
-      setPhoto(null);
-      setPhotoPreview(null);
-      return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-      setErrors((prev) => ({ ...prev, photo: "Please choose an image file." }));
-      return;
-    }
-    if (file.size > MAX_PHOTO_SIZE) {
-      setErrors((prev) => ({ ...prev, photo: "Image must be under 5MB." }));
-      return;
-    }
-
-    setErrors((prev) => ({ ...prev, photo: undefined }));
-    setPhoto(file);
-    setPhotoPreview(URL.createObjectURL(file));
-  }
 
   function validate() {
     const next = {};
@@ -67,17 +51,18 @@ export default function PlantForm({ onAdd, submitting, serverFieldErrors }) {
     e.preventDefault();
     if (!validate()) return;
 
-    const formData = new FormData();
-    formData.append("name", name.trim());
-    formData.append("species", species.trim());
-    formData.append("category", category);
-    formData.append("wateringFrequencyDays", frequency);
-    formData.append("dateAcquired", dateAcquired);
-    formData.append("notes", notes.trim());
-    formData.append("lastWateredDate", new Date().toISOString());
-    if (photo) formData.append("photo", photo);
+    const plantData = {
+      name: name.trim(),
+      species: species.trim(),
+      category,
+      wateringFrequencyDays: frequency,
+      dateAcquired,
+      notes: notes.trim(),
+      lastWateredDate: new Date().toISOString(),
+      photoUrl,
+    };
 
-    onAdd(formData, () => {
+    addPlant(plantData, () => {
       // called by the parent on success, to reset the form
       setName("");
       setSpecies("");
@@ -85,8 +70,7 @@ export default function PlantForm({ onAdd, submitting, serverFieldErrors }) {
       setFrequency("7");
       setDateAcquired(todayISODate());
       setNotes("");
-      setPhoto(null);
-      setPhotoPreview(null);
+      setPhotoUrl(null);
       setErrors({});
     });
   }
@@ -179,25 +163,11 @@ export default function PlantForm({ onAdd, submitting, serverFieldErrors }) {
           )}
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Photo <span className="text-gray-400 font-normal">(optional)</span>
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoChange}
-            className="w-full text-sm text-gray-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-gray-100 file:text-gray-700 file:text-sm hover:file:bg-gray-200"
-          />
-          {allErrors.photo && <p className="text-red-600 text-xs mt-1">{allErrors.photo}</p>}
-          {photoPreview && (
-            <img
-              src={photoPreview}
-              alt="Preview"
-              className="mt-2 w-16 h-16 object-cover rounded-md border border-gray-200"
-            />
-          )}
-        </div>
+        <UploadDropzone
+          photoUrl={photoUrl}
+          onUploaded={setPhotoUrl}
+          onClear={() => setPhotoUrl(null)}
+        />
 
         <div className="sm:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">

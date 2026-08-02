@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Signup() {
   const { signup, loading, error } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -32,7 +34,10 @@ export default function Signup() {
     if (!validate()) return;
 
     const success = await signup({ email: email.trim(), password });
-    if (success) navigate("/");
+    if (success) {
+      showToast("Account created — welcome to PlantCare!", "success");
+      navigate("/");
+    }
   }
 
   return (

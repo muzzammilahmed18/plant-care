@@ -44,14 +44,14 @@ export async function getPlants() {
   return res.json();
 }
 
-// Takes a FormData object (built by PlantForm) so it can include the
-// photo file alongside the text fields. Don't set Content-Type manually
-// here — the browser sets the correct multipart boundary automatically.
-export async function createPlant(formData) {
+// Plain JSON now — the photo (if any) was already uploaded separately
+// via uploadFile(), so this just sends the resulting photoUrl string
+// along with the rest of the plant's fields.
+export async function createPlant(plantData) {
   const res = await fetch(`${BASE_URL}/plants`, {
     method: "POST",
-    headers: authHeaderOnly(),
-    body: formData,
+    headers: jsonHeaders(),
+    body: JSON.stringify(plantData),
   });
   const data = await res.json();
   if (!res.ok) {
@@ -81,4 +81,42 @@ export async function deletePlant(id) {
   });
   if (!res.ok) throw new Error("Failed to delete plant");
   return res.json();
+}
+
+// Uploads a single file with real progress reporting via XMLHttpRequest.
+// fetch() genuinely can't report upload progress — XHR is the only
+// browser API that exposes progress events for an upload in flight.
+export function uploadFile(file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${BASE_URL}/upload`);
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable && onProgress) {
+        onProgress(Math.round((event.loaded / event.total) * 100));
+      }
+    };
+
+    xhr.onload = () => {
+      try {
+        const data = JSON.parse(xhr.responseText);
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(data);
+        } else {
+          reject(new Error(data.error || "Upload failed"));
+        }
+      } catch {
+        reject(new Error("Upload failed"));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error("Upload failed — check your connection"));
+
+    xhr.send(formData);
+  });
 }
