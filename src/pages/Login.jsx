@@ -40,8 +40,9 @@ export default function Login() {
         <h1 className="text-2xl font-bold text-gray-900 mb-1">🌱 Welcome back</h1>
         <p className="text-gray-500 text-sm mb-6">Log in to see your plants.</p>
 
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label htmlFor="login-email" className="block text-sm font-medium text-stone-700 mb-1">Email</label>
         <input
+          id="login-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -49,8 +50,9 @@ export default function Login() {
         />
         {fieldErrors.email && <p className="text-red-600 text-xs mb-2">{fieldErrors.email}</p>}
 
-        <label className="block text-sm font-medium text-gray-700 mb-1 mt-3">Password</label>
+        <label htmlFor="login-email" className="block text-sm font-medium text-stone-700 mb-1">Password</label>
         <input
+          id="login-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

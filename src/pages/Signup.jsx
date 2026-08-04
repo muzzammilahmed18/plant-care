@@ -49,8 +49,9 @@ export default function Signup() {
         <h1 className="text-2xl font-bold text-gray-900 mb-1">🌱 Create account</h1>
         <p className="text-gray-500 text-sm mb-6">Start tracking your plants.</p>
 
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label htmlFor="signup-email" className="block text-sm font-medium text-stone-700 mb-1">Email</label>
         <input
+          id="signup-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -58,8 +59,9 @@ export default function Signup() {
         />
         {fieldErrors.email && <p className="text-red-600 text-xs mb-2">{fieldErrors.email}</p>}
 
-        <label className="block text-sm font-medium text-gray-700 mb-1 mt-3">Password</label>
+        <label htmlFor="signup-password" className="block text-sm font-medium text-stone-700 mb-1">Password</label>
         <input
+          id="signup-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -67,8 +69,9 @@ export default function Signup() {
         />
         {fieldErrors.password && <p className="text-red-600 text-xs mb-2">{fieldErrors.password}</p>}
 
-        <label className="block text-sm font-medium text-gray-700 mb-1 mt-3">Confirm password</label>
+        <label htmlFor="signup-confirm-password" className="block text-sm font-medium text-gray-700 mb-1 mt-3">Confirm password</label>
         <input
+          id="signup-confirm-password"
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
