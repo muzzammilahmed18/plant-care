@@ -1,7 +1,6 @@
 import { usePlants } from "../context/PlantsContext";
 import { getPlantStatus } from "../utils/plantStatus";
-
-const BASE_URL = "http://localhost:5000";
+import { BASE_URL } from "../api";
 
 const STATUS_STYLES = {
   Overdue: "bg-red-100 text-red-700",
