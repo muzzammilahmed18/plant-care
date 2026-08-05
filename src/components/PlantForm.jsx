@@ -58,7 +58,7 @@ export default function PlantForm() {
       wateringFrequencyDays: frequency,
       dateAcquired,
       notes: notes.trim(),
-      lastWateredDate: new Date().toISOString(),
+      lastWateredDate: new Date(dateAcquired).toISOString(),
       photoUrl,
     };
 
