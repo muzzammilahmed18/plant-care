@@ -32,7 +32,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
       <form
         onSubmit={handleSubmit}
         className="bg-white border border-gray-200 rounded-lg p-8 w-full max-w-sm"
@@ -72,9 +72,9 @@ export default function Login() {
 
         <p className="text-sm text-gray-500 mt-5 text-center">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-600 hover:underline">Sign up</Link>
+          <Link to="/signup" className="text-blue-600 underline hover:text-blue-700">Sign up</Link>
         </p>
       </form>
-    </div>
+    </main>
   );
 }

@@ -14,7 +14,7 @@ export default function Plants() {
   const { loading, error, plants, loadPlants } = usePlants();
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 md:px-10 py-12">
+    <main className="min-h-screen bg-gray-50 px-6 md:px-10 py-12">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-start justify-between mb-2 flex-wrap gap-3">
           <h1 className="text-3xl font-bold text-gray-900">🌱 PlantCare</h1>
@@ -44,6 +44,6 @@ export default function Plants() {
         {!loading && !error && plants.length === 0 && <EmptyState />}
         {!loading && !error && plants.length > 0 && <PlantList />}
       </div>
-    </div>
+    </main>
   );
 }

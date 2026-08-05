@@ -82,46 +82,49 @@ export default function PlantForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white border border-gray-200 rounded-lg p-6 mb-8"
+      className="bg-white border border-stone-200 rounded-lg p-6 mb-8"
     >
-      <h2 className="font-semibold text-gray-900 mb-4">Add a plant</h2>
+      <h2 className="font-semibold text-stone-900 mb-4">Add a plant</h2>
 
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="plant-name" className="block text-sm font-medium text-stone-700 mb-1">
             Plant name
           </label>
           <input
+            id="plant-name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Fiddle Leaf Fig"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
           />
           {allErrors.name && <p className="text-red-600 text-xs mt-1">{allErrors.name}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Species <span className="text-gray-400 font-normal">(optional)</span>
+          <label htmlFor="plant-species" className="block text-sm font-medium text-stone-700 mb-1">
+            Species <span className="text-stone-400 font-normal">(optional)</span>
           </label>
           <input
+            id="plant-species"
             type="text"
             value={species}
             onChange={(e) => setSpecies(e.target.value)}
             placeholder="Ficus lyrata"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="plant-category" className="block text-sm font-medium text-stone-700 mb-1">
             Category
           </label>
           <select
+            id="plant-category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 bg-white"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500 bg-white"
           >
             <option value="">Select a category...</option>
             {CATEGORY_OPTIONS.map((c) => (
@@ -132,15 +135,16 @@ export default function PlantForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="plant-frequency" className="block text-sm font-medium text-stone-700 mb-1">
             Water every (days)
           </label>
           <input
+            id="plant-frequency"
             type="number"
             min="1"
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
           />
           {allErrors.wateringFrequencyDays && (
             <p className="text-red-600 text-xs mt-1">{allErrors.wateringFrequencyDays}</p>
@@ -148,15 +152,16 @@ export default function PlantForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="plant-date-acquired" className="block text-sm font-medium text-stone-700 mb-1">
             Date acquired
           </label>
           <input
+            id="plant-date-acquired"
             type="date"
             value={dateAcquired}
             max={todayISODate()}
             onChange={(e) => setDateAcquired(e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
           />
           {allErrors.dateAcquired && (
             <p className="text-red-600 text-xs mt-1">{allErrors.dateAcquired}</p>
@@ -170,15 +175,16 @@ export default function PlantForm() {
         />
 
         <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Notes <span className="text-gray-400 font-normal">(optional)</span>
+          <label htmlFor="plant-notes" className="block text-sm font-medium text-stone-700 mb-1">
+            Notes <span className="text-stone-400 font-normal">(optional)</span>
           </label>
           <textarea
+            id="plant-notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
             placeholder="Gift from mom, keep away from direct sun..."
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+            className="w-full border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
           />
         </div>
       </div>

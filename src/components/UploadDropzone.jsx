@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { uploadFile } from "../api";
+import { uploadFile, BASE_URL } from "../api";
 
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB, matches the backend limit
 
@@ -66,7 +66,7 @@ export default function UploadDropzone({ photoUrl, onUploaded, onClear }) {
   }
 
   const isUploading = progress !== null;
-  const displayImage = photoUrl ? `http://localhost:5000${photoUrl}` : preview;
+  const displayImage = photoUrl ? `${BASE_URL}${photoUrl}` : preview;
 
   return (
     <div>
