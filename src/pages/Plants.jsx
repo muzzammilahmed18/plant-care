@@ -19,7 +19,10 @@ export default function Plants() {
         <div className="flex items-start justify-between mb-2 flex-wrap gap-3">
           <h1 className="text-3xl font-bold text-gray-900">🌱 PlantCare</h1>
           <div className="flex items-center gap-4">
-            <Link to="/dashboard" className="text-sm text-blue-600 hover:underline">
+            <Link
+              to="/dashboard"
+              className="bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
+            >
               View dashboard →
             </Link>
             <div className="text-right">

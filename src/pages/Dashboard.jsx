@@ -93,7 +93,10 @@ export default function Dashboard() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-start justify-between mb-2 flex-wrap gap-3">
           <h1 className="text-3xl font-bold text-gray-900">📊 Dashboard</h1>
-          <Link to="/" className="text-sm text-blue-600 hover:underline">
+          <Link
+            to="/"
+            className="border border-gray-300 text-gray-700 text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-50 transition-colors"
+          >
             ← Back to plants
           </Link>
         </div>
