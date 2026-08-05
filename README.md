@@ -91,7 +91,7 @@ backend's URL instead — never committed to the repo.
 ## Run locally
 
 This expects the backend running at `http://localhost:5000` — see the
-[backend repo](https://github.com/yourusername/plant-care-backend) for
+[backend repo](https://github.com/muzzammilahmed18/plant-care-backend) for
 its own setup.
 
 ```bash
